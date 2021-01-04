@@ -41,15 +41,12 @@ class PerformanceCalculator {
 		this.play = aPlay;
 	}
 
-	getAmount() {
+	get amount() {
 		throw new Error('subclass responsibility');
 	}
 
-	getVolumeCredits() {
-		let result = 0;
-		result += Math.max(this.performance.audience - 30, 0);
-		if ('comedy' === this.play.type) result += Math.floor(this.performance.audience / 5);
-		return result;
+	get volumeCredits() {
+		return Math.max(this.performance.audience - 30, 0);
 	}
 }
 
@@ -65,7 +62,7 @@ function createPerformanceCalculator(aPerformance, aPlay) {
 }
 
 class TragedyCalculator extends PerformanceCalculator {
-	getAmount() {
+	get amount() {
 		let result = 40000;
 		if (this.performance.audience > 30) {
 			result += 1000 * (this.performance.audience - 30);
@@ -74,12 +71,16 @@ class TragedyCalculator extends PerformanceCalculator {
 	}
 }
 class ComedyCalculator extends PerformanceCalculator {
-	getAmount() {
+	get amount() {
 		let result = 30000;
 		if (this.performance.audience > 20) {
 			result += 10000 + 500 * (this.performance.audience - 20);
 		}
 		result += 300 * this.performance.audience;
 		return result;
+	}
+
+	get volumeCredits() {
+		return super.volumeCredits + Math.floor(this.performance.audience / 5);
 	}
 }
