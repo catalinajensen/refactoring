@@ -97,6 +97,13 @@ function renderPlainText(data, plays) {
 	result += `Amount owed is ${usd(data.totalAmount)}\n`;
 	result += `You earned ${data.totalVolumeCredits} credits\n`;
 	return result;
+
+	function totalAmount(data) {
+		return data.performances.reduce((total, p) => total + p.amount, 0);
+	}
+	function totalVolumeCredits(data) {
+		return data.performances.reduce((total, p) => total + p.volumeCredits, 0);
+	}
 }
 
 function usd(aNumber) {
