@@ -17,24 +17,23 @@ export default function createStatementData(invoice, plays) {
 	function playFor(aPerformance) {
 		return plays[aPerformance.playID];
 	}
-	function amountFor(aPerformance) {
-		return new PerformanceCalculator(aPerformance, playFor(aPerformance)).amount;
-	}
-	function volumeCreditsFor(aPerformance) {
-		let result = 0;
-		result += Math.max(aPerformance.audience - 30, 0);
-		if ('comedy' === aPerformance.play.type) result += Math.floor(perf.audience / 5);
-		return result;
-	}
 	function totalAmount(data) {
 		return data.performances.reduce((total, p) => total + p.amount, 0);
 	}
-
 	function totalVolumeCredits(data) {
 		return data.performances.reduce((total, p) => total + p.volumeCredits, 0);
 	}
 }
-
+function createPerformanceCalculator(aPerformance, aPlay) {
+	switch (aPlay.type) {
+		case 'tragedy':
+			return new TragedyCalculator(aPerformance, aPlay);
+		case 'comedy':
+			return new ComedyCalculator(aPerformance, aPlay);
+		default:
+			throw new Error(`unknown type: ${aPlay.type}`);
+	}
+}
 class PerformanceCalculator {
 	constructor(aPerformance, aPlay) {
 		this.performance = aPerformance;
@@ -49,18 +48,6 @@ class PerformanceCalculator {
 		return Math.max(this.performance.audience - 30, 0);
 	}
 }
-
-function createPerformanceCalculator(aPerformance, aPlay) {
-	switch (aPlay.type) {
-		case 'tragedy':
-			return new TragedyCalculator(aPerformance, aPlay);
-		case 'comedy':
-			return new ComedyCalculator(aPerformance, aPlay);
-		default:
-			throw new Error(`unknown type: ${aPlay.type}`);
-	}
-}
-
 class TragedyCalculator extends PerformanceCalculator {
 	get amount() {
 		let result = 40000;
