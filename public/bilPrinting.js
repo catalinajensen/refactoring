@@ -25,6 +25,10 @@ const invoices = [
 ];
 
 function statement(invoice, plays) {
+	return renderPlainText(invoice, plays);
+}
+
+function renderPlainText(invoice, plays) {
 	let result = `Statement for ${invoice.customer}\n`;
 	for (let perf of invoice.performances) {
 		result += ` ${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience} seats)\n`;
@@ -41,7 +45,6 @@ function totalAmount() {
 	}
 	return result;
 }
-
 function totalVolumeCredits() {
 	let result = 0;
 	for (let perf of invoice.performances) {
